@@ -28,10 +28,6 @@ def sap():
     #Titulo so site
     st.title("Gerador de Relatório SAP")
 
-    import streamlit as st
-    from datetime import datetime
-    import locale
-
     def obter_periodo():
         periodo_inicio_dt = None
         periodo_final_dt = None
