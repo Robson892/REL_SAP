@@ -1,9 +1,25 @@
 import streamlit as st
 import importlib
+import bcrypt
+import yaml
 
 # Definindo uma chave de estado para o login
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
+
+# Função para carregar os dados dos usuários do arquivo YAML
+def load_users_from_yaml():
+    with open('users.yaml', 'r') as file:
+        users_data = yaml.safe_load(file)
+    return users_data['users']
+
+# Função para buscar o hash da senha baseado no nome de usuário
+def get_user_password_hash(username):
+    users = load_users_from_yaml()
+    for user in users:
+        if user['username'] == username:
+            return user['password_hash']
+    return None
 
 # Função para mostrar a tela de login
 def show_login():
@@ -11,6 +27,7 @@ def show_login():
     
     username = st.text_input('Nome de usuário')
     password = st.text_input('Senha', type='password')
+    
     # Estilizando o botão de login com HTML/CSS
     st.markdown("""
         <style>
@@ -32,8 +49,11 @@ def show_login():
         }
         </style>
         """, unsafe_allow_html=True)
+    
     if st.button('Login'):
-        if username == "********" and password == "**********":
+        # Recuperar o hash da senha do arquivo YAML com base no username
+        password_hash = get_user_password_hash(username)
+        if password_hash and bcrypt.checkpw(password.encode(), password_hash.encode()):
             st.session_state['logged_in'] = True
             st.experimental_rerun()  # Força o recarregamento da aplicação imediatamente após o login
         else:
