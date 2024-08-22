@@ -33,7 +33,7 @@ def show_login():
         </style>
         """, unsafe_allow_html=True)
     if st.button('Login'):
-        if username == "usuario" and password == "senha123":
+        if username == "********" and password == "**********":
             st.session_state['logged_in'] = True
             st.experimental_rerun()  # Força o recarregamento da aplicação imediatamente após o login
         else:
